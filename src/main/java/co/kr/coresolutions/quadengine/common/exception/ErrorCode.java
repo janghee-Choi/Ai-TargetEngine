@@ -1,0 +1,61 @@
+package co.kr.coresolutions.quadengine.common.exception;
+
+import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@AllArgsConstructor
+@Getter
+public enum ErrorCode implements CodeInterface {
+
+	// 스케줄 에러
+	REQUEST_BODY_NOT_VALID(101, "REQUEST_BODY_NOT_VALID"),
+	SCHEDULE_DATE_NOT_VALID(102, "SCHEDULE_DATE_NOT_VALID"),
+	SCHEDULE_ALREADY_EXIST(103, "SCHEDULE_ALREADY_EXIST"),
+	SCHEDULE_NOT_FOUND(104, "SCHEDULE_NOT_FOUND"),					// (260212) 스케줄 단건 조회 에러 코드 추가
+	SCHEDULE_HIST_INSERT_FAIL(105, "SCHEDULE_HIST_INSERT_FAIL"),		// (260224) 스케줄 이력 입력 실패 코드 추가
+	SCHEDULE_HIST_ERROR(106, "SCHEDULE_HIST_ERROR"),
+
+	// 쿼리 에러
+	CONNECTION_NOT_FOUND(201, "CONNECTION_NOT_FOUND"),
+	FILE_NOT_FOUND(202, "FILE_NOT_FOUND"),
+	QUERY_EXEC_FAILED(203, "QUERY_EXEC_FAILED"),
+	DIMENSION_NOT_FOUND(211, "DIMENSION_NOT_FOUND"),
+	ML_NOT_FOUND(212, "ML_NOT_FOUND"),
+	DIMENSION_VALUE_TYPE_ERROR(213, "DIMENSION_VALUE_TYPE_ERROR"),
+	DIMENSION_REPLACENODE_IS_EMPTY(214, "DIMENSION_REPLACENODE_IS_EMPTY"),
+	COMMAND_ALREADY_EXIST(231, "COMMAND_ALREADY_EXIST"),
+	COMMAND_IS_EMPTY(232, "COMMAND_IS_EMPTY"),
+	COMMAND_RUN_FAILED(233, "COMMAND_RUN_FAILED"),
+	COMMAND_CANCELED(234, "COMMAND_CANCELED"),
+	COMMAND_NOT_VALID(235, "COMMAND_NOT_VALID"),
+	EXEC_NODE_ALREADY_EXIST(241, "EXEC_NODE_ALREADY_EXIST"),
+	EXEC_NODE_DATE_NOT_VALID(242, "EXEC_NODE_DATE_NOT_VALID"),
+	EXEC_NODE_IS_EMPTY(243, "EXEC_NODE_IS_EMPTY"),
+	EXEC_NODE_RUN_FAILED(244, "EXEC_NODE_RUN_FAILED"),
+	// 폴링 에러
+	POLLING_ALREADY_RUNNING(301, "POLLING_ALREADY_RUNNING"),
+	POLLING_NOT_FOUND(302, "POLLING_NOT_FOUND"),
+	POLLING_TARGET_IS_EMPTY(303, "POLLING_TARGET_IS_EMPTY"),
+
+
+	// 기타오류
+	FAILED(999, "FAILED");
+
+
+	private final Boolean success = false;
+	private final Integer code;
+	private final String message;
+
+	@JsonValue
+	public Map<String, Object> toMap() {
+		Map<String, Object> map = new HashMap<>();
+		map.put("success", success);
+		map.put("code", code);
+		map.put("message", message);
+		return map;
+	}
+}

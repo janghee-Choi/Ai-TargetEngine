@@ -1,0 +1,91 @@
+server:
+  port: ${SERVER.PORT:3036}
+  tomcat:
+    basedir: ${SERVER.TOMCAT.BASEDIR:/sw/tomcat-base/apache-tomcat-11.0.18}
+spring:
+  config:
+    import:
+      - optional:file:.env[.properties]
+  application:
+    name: ${SPRING.APPLICATION.NAME:quad-engine}
+    version: ${SPRING.APPLICATION.VERSION:1.0.0}
+  datasource:
+    url: ${SPRING.DATASOURCE.URL}
+    username: ${SPRING.DATASOURCE.USERNAME}
+    password: ${SPRING.DATASOURCE.PASSWORD}
+    driver-class-name: ${SPRING.DATASOURCE.DRIVER-CLASS-NAME}
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    show-sql: ${SPRING.JPA.SHOW-SQL:false}
+    hibernate:
+      ddl-auto: ${SPRING.JPA.HIBERNATE.DDL-AUTO:none}
+    properties:
+      hibernate:
+        format_sql: ${SPRING.JPA.PROPERTIES.HIBERNATE.FORMAT-SQL:true}
+        use_sql_comments : ${SPRING.JPA.PROPERTIES.HIBERNATE.USE-SQL-COMMENTS:true}
+  jackson:
+    default-property-inclusion: ${SPRING.JACKSON.DEFAULT-PROPERTY-INCLUSION:non_null}
+  quartz:
+    enabled: ${SPRING.QUARTZ.ENABLED:true}
+    auto-startup: ${SPRING.QUARTZ.ENABLED:true} 
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: ${SPRING.QUARTZ.JDBC.INITIALIZE-SCHEMA:never}
+    properties:
+      org.quartz.scheduler.instanceName: Quad-Engine-ClusteredScheduler
+      org.quartz.scheduler.instanceId: ${SPRING.QUARTZ.INSTANCE-ID:AUTO}
+      org.quartz.threadPool.threadCount: ${SPRING.QUARTZ.THREAD-POOL.THREAD-COUNT:20}
+      org.quartz.threadPool.makeThreadsDaemons: ${SPRING.QUARTZ.THREAD-POOL.MAKE-THREADS-DAEMONS:true}
+      org.quartz.jobStore.tablePrefix: ${SPRING.QUARTZ.JOB-STORE.TABLE-PREFIX:T_SCHEDULE_}
+      org.quartz.jobStore.isClustered: ${SPRING.QUARTZ.JOB-STORE.IS-CLUSTERED:true}
+      org.quartz.jobStore.clusterCheckinInterval: ${SPRING.QUARTZ.JOB-STORE.CLUSTER-CHECKIN-INTERVAL:20000}
+      org.quartz.jobStore.misfireThreshold: ${SPRING.QUARTZ.JOB-STORE.MISFIRE-THRESHOLD:60000}
+
+springdoc:
+  api-docs:
+    path: ${SPRINGDOC.API-DOCS.PATH:/api-docs}
+     # Swagger 노출 방지시 false 로 설정
+    enabled : ${SPRINGDOC.API-DOCS.ENABLED:false}
+  swagger-ui:
+    path: ${SPRINGDOC.SWAGGER-UI.PATH:/swagger-ui}
+    operationsSorter: ${SPRINGDOC.SWAGGER-UI.OPERATIONS-SORTER:method}
+    tagsSorter: ${SPRINGDOC.SWAGGER-UI.TAGS-SORTER:alpha}
+    display-request-duration: ${SPRINGDOC.SWAGGER-UI.DISPLAY-REQUEST-DURATION:true}
+    enabled: ${SPRINGDOC.SWAGGER-UI.ENABLED:false}
+
+rest-client:
+  config:
+    max-conn-total: ${REST-CLIENT.CONFIG.MAX-CONN-TOTAL:100}
+    max-conn-per-route: ${REST-CLIENT.CONFIG.MAX-CONN-PER-ROUTE:50}
+    connect-timeout: ${REST-CLIENT.CONFIG.CONNECT-TIMEOUT:3}
+    socket-timeout: ${REST-CLIENT.CONFIG.SOCKET-TIMEOUT:1800}
+    connection-request-timeout: ${REST-CLIENT.CONFIG.CONNECTION-REQUEST-TIMEOUT:3}
+    evict-idle-connections: ${REST-CLIENT.CONFIG.EVICT-IDLE-CONNECTIONS:60}
+
+query:
+  data-source:
+    config:
+      maximum-pool-size: ${QUERY.DATA-SOURCE.CONFIG.MAXIMUM-POOL-SIZE:30}
+      minimum-idle: ${QUERY.DATA-SOURCE.CONFIG.MINIMUM-IDLE:3}
+      connection-timeout: ${QUERY.DATA-SOURCE.CONFIG.CONNECTION-TIMEOUT:30000}
+      idle-timeout: ${QUERY.DATA-SOURCE.CONFIG.IDLE-TIMEOUT:30000}
+      max-lifetime: ${QUERY.DATA-SOURCE.CONFIG.MAX-LIFETIME:1800000}
+      leak-detection-threshold: ${QUERY.DATA-SOURCE.CONFIG.LEAK-DETECTION-THRESHOLD:2500}
+
+app:
+  log:
+    base-path: ${APP.LOG.BASE-PATH:./logs}
+    max-history: ${APP.LOG.MAX-HISTORY:90}
+    root-level: ${APP.LOG.ROOT-LEVEL:INFO} 
+    common-level: ${APP.LOG.COMMON-LEVEL:INFO}
+    scheduler-level: ${APP.LOG.SCHEDULER-LEVEL:INFO}
+    query-level: ${APP.LOG.QUERY-LEVEL:INFO}
+  logging-db: ${APP.LOGGING-DB:false}
+  encrypt:
+    password: ${APP.ENCRYPT.PASSWORD:false}
+  running-mode: ${APP.RUNNING-MODE:single} # single | duplex
+  partner:
+    url: ${APP.PARTNER.URL:""}
+  command:
+    shutdown-minutes: ${APP.COMMAND.SHUTDOWN-MINUTES:30}
+

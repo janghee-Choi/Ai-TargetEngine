@@ -1,0 +1,161 @@
+# 스케줄/엔진 수정사항
+
+작업 및 진척 관련사항.  
+[슬랙 진척 공유 - https://easycorehq.slack.com/docs/T02LFDYSDDL/F0AF4H0K43A](https://easycorehq.slack.com/docs/T02LFDYSDDL/F0AF4H0K43A "EASYCODE 슬랙 - 쿼리엔진개선 내 캔버스")
+
+
+
+# 환경 설정
+실행 전 env 파일을 .env 파일 복사 및 생성합니다.
+아래와 같이 .env 파일 작성 및 설정 . (*) 필수 항목의 경우 필수로 작성해서 실행해야함.
+
+Password 암호화 필요시. 
+GET /query/encrypt/"암호화 변환 필요 문자열" 
+API 를 통해 암호화 수행.
+
+<pre>
+#########################################################
+# Server 설정 
+# 입력 항목 (*): 필수 입력 항목
+# (*) SERVER.PORT : 애플리케이션이 실행될 포트를 지정합니다. 예를 들어, 8080으로 설정하면 http://localhost:8080에서 애플리케이션에 접근할 수 있습니다.
+# (*) SERVER.TOMCAT.BASEDIR : Tomcat의 base directory를 지정합니다. 예를 들어, C:/quadmax/tomcat-base/apache-tomcat-11.0.18과 같이 설정할 수 있습니다.
+#########################################################
+
+# Server 설정 
+SERVER.PORT=
+SERVER.TOMCAT.BASEDIR=
+
+#########################################################
+# Spring 설정
+# 입력 항목 (*): 필수 입력 항목
+# SPRING.APPLICATION.NAME : 애플리케이션 이름을 지정합니다. 예를 들어, quad-engine과 같이 설정할 수 있습니다.
+# SPRING.APPLICATION.VERSION : 애플리케이션 버전을 지정합니다. 예를 들어, 1.0.0과 같이 설정할 수 있습니다.
+# (*) SPRING.DATASOURCE.URL : 데이터베이스 연결 URL을 지정합니다. 예를 들어, MySQL의 경우 jdbc:mysql://localhost:3306/your_database와 같이 설정할 수 있습니다.
+# (*) SPRING.DATASOURCE.USERNAME  : 데이터베이스에 연결할 때 사용할 사용자 이름을 지정합니다.
+# (*) SPRING.DATASOURCE.PASSWORD  : 데이터베이스에 연결할 때 사용할 비밀번호를 지정합니다.
+# (*) SPRING.DATASOURCE.DRIVER-CLASS-NAME : 데이터베이스 드라이버 클래스 이름을 지정합니다. 예를 들어, MySQL의 경우 com.mysql.cj.jdbc.Driver와 같이 설정할 수 있습니다.
+#########################################################
+
+# Spring 설정
+SPRING.APPLICATION.NAME=quad-engine
+SPRING.APPLICATION.VERSION=1.0.0
+ 
+SPRING.DATASOURCE.URL=
+SPRING.DATASOURCE.USERNAME=
+SPRING.DATASOURCE.PASSWORD=
+SPRING.DATASOURCE.DRIVER-CLASS-NAME=
+
+#########################################################
+# Spring.Quartz 설정
+# 입력 항목 (*): 필수 입력 항목
+# SPRING.QUARTZ.JDBC.INITIALIZE-SCHEMA : Quartz 스키마 초기화 설정입니다. always로 설정하면 애플리케이션 시작 시마다 Quartz 스키마가 자동으로 생성됩니다. never로 설정하면 수동으로 스키마를 생성해야 합니다. 운영 환경에서는 보통 never로 설정하여 스키마를 수동으로 관리하는 것이 좋습니다.
+# SPRING.QUARTZ.INSTANCE-ID : Quartz 인스턴스 ID 설정입니다. AUTO로 설정하면 애플리케이션이 시작될 때마다 고유한 인스턴스 ID가 자동으로 생성됩니다.
+# SPRING.QUARTZ.THREAD-POOL.THREAD-COUNT : Quartz 스레드 풀의 최대 스레드 수를 지정합니다. 예를 들어, 20으로 설정하면 최대 20개의 스레드가 Quartz 작업을 처리할 수 있습니다.
+# SPRING.QUARTZ.JOB-STORE.TABLE-PREFIX : Quartz 작업 저장소 테이블의 접두사를 지정합니다. 예를 들어, T_SCHEDULE_로 설정하면 Quartz 작업 저장소 테이블이 T_SCHEDULE_ 접두사를 사용하여 생성됩니다.
+# SPRING.QUARTZ.THREAD-POOL.MAKE-THREADS-DAEMONS : Quartz 스레드를 데몬 스레드로 만들지 여부를 지정합니다. true로 설정하면 Quartz 스레드가 데몬 스레드로 생성됩니다.
+# SPRING.QUARTZ.JOB-STORE.IS-CLUSTERED : Quartz 작업 저장소가 클러스터링을 지원하는지 여부를 지정합니다. true로 설정하면 Quartz 작업 저장소가 클러스터링을 지원하게 됩니다.
+# SPRING.QUARTZ.JOB-STORE.CLUSTER-CHECKIN-INTERVAL  : Quartz 클러스터링에서 노드 간 체크인 간격을 밀리초 단위로 지정합니다. 예를 들어, 20000으로 설정하면 노드가 20초마다 체크인하게 됩니다.
+# SPRING.QUARTZ.JOB-STORE.MISFIRE-THRESHOLD : Quartz 작업이 미스파이어된 것으로 간주되는 시간 임계값을 밀리초 단위로 지정합니다. 예를 들어, 60000으로 설정하면 작업이 60초 이상 지연되면 미스파이어된 것으로 간주됩니다.    
+#########################################################
+
+# Quartz 설정 
+#SPRING.QUARTZ.JDBC.INITIALIZE-SCHEMA=never
+#SPRING.QUARTZ.INSTANCE-ID=AUTO  
+#SPRING.QUARTZ.THREAD-POOL.THREAD-COUNT=20
+#SPRING.QUARTZ.JOB-STORE.TABLE-PREFIX=T_SCHEDULE_
+#SPRING.QUARTZ.THREAD-POOL.MAKE-THREADS-DAEMONS=true
+#SPRING.QUARTZ.JOB-STORE.IS-CLUSTERED=true
+#SPRING.QUARTZ.JOB-STORE.CLUSTER-CHECKIN-INTERVAL=20000
+#SPRING.QUARTZ.JOB-STORE.MISFIRE-THRESHOLD=60000
+
+
+#########################################################
+# Springdoc 설정
+# 입력 항목 (*): 필수 입력 항목
+# SPRINGDOC.API-DOCS.PATH : OpenAPI 명세서가 제공될 경로를 지정합니다. 예를 들어, /api-docs로 설정하면 http://localhost:8080/api-docs에서 OpenAPI 명세서를 확인할 수 있습니다.
+# SPRINGDOC.API-DOCS.ENABLED : OpenAPI 명세서 제공 여부를 지정합니다. true로 설정하면 OpenAPI 명세서가 제공되고, false로 설정하면 제공되지 않습니다.
+# SPRINGDOC.SWAGGER-UI.PATH : Swagger UI가 제공될 경로를 지정합니다. 예를 들어, /swagger-ui로 설정하면 http://localhost:8080/swagger-ui에서 Swagger UI를 확인할 수 있습니다.
+# SPRINGDOC.SWAGGER-UI.OPERATIONS-SORTER : Swagger UI에서 API 작업을 정렬하는 방법을 지정합니다. method로 설정하면 HTTP 메서드별로 정렬되고, alpha로 설정하면 알파벳 순으로 정렬됩니다.
+# SPRINGDOC.SWAGGER-UI.TAGS-SORTER : Swagger UI에서 API 태그를 정렬하는 방법을 지정합니다. alpha로 설정하면 알파벳 순으로 정렬됩니다.
+# SPRINGDOC.SWAGGER-UI.DISPLAY-REQUEST-DURATION : Swagger UI에서 API 요청의 처리 시간을 표시할지 여부를 지정합니다. true로 설정하면 요청 처리 시간이 표시되고, false로 설정하면 표시되지 않습니다.
+# SPRINGDOC.SWAGGER-UI.ENABLED : Swagger UI 제공 여부를 지정합니다. true로 설정하면 Swagger UI가 제공되고, false로 설정하면 제공되지 않습니다.
+#########################################################
+
+# Springdoc 설정
+SPRINGDOC.API-DOCS.PATH=/api-docs
+SPRINGDOC.API-DOCS.ENABLED=true
+SPRINGDOC.SWAGGER-UI.PATH=/swagger-ui
+SPRINGDOC.SWAGGER-UI.ENABLED=true
+
+#########################################################
+# RestTemplate 설정
+# 입력 항목 (*): 필수 입력 항목
+# REST-CLIENT.CONFIG.MAX-CONN-TOTAL : RestTemplate이 사용할 수 있는 최대 총 연결 수를 지정합니다. 예를 들어, 100으로 설정하면 RestTemplate이 최대 100개의 연결을 동시에 사용할 수 있습니다.
+# REST-CLIENT.CONFIG.MAX-CONN-PER-ROUTE : RestTemplate이 특정 경로에 대해 사용할 수 있는 최대 연결 수를 지정합니다. 예를 들어, 50으로 설정하면 RestTemplate이 특정 경로에 대해 최대 50개의 연결을 동시에 사용할 수 있습니다.
+# REST-CLIENT.CONFIG.CONNECT-TIMEOUT : RestTemplate이 원격 서버에 연결을 시도할 때의 타임아웃 시간을 밀리초 단위로 지정합니다. 예를 들어, 3000으로 설정하면 연결 시도가 3초 이상 걸릴 경우 타임아웃이 발생합니다.
+# REST-CLIENT.CONFIG.SOCKET-TIMEOUT : RestTemplate이 원격 서버로부터 응답을 기다리는 동안의 타임아웃 시간을 밀리초 단위로 지정합니다. 예를 들어, 1800000으로 설정하면 응답을 기다리는 시간이 30분 이상 걸릴 경우 타임아웃이 발생합니다.
+# REST-CLIENT.CONFIG.CONNECTION-REQUEST-TIMEOUT : RestTemplate이 연결 풀에서 연결을 가져오는 데 걸리는 최대 시간을 밀리초 단위로 지정합니다. 예를 들어, 3000으로 설정하면 연결 풀에서 연결을 가져오는 데 3초 이상 걸릴 경우 타임아웃이 발생합니다.
+# REST-CLIENT.CONFIG.EVICT-IDLE-CONNECTIONS : RestTemplate이 유휴 연결을 제거하는 간격을 초 단위로 지정합니다. 예를 들어, 60으로 설정하면 RestTemplate이 60초마다 유휴 연결을 제거합니다.
+#########################################################
+
+# RestTemplate 설정
+#REST-CLIENT.CONFIG.MAX-CONN-TOTAL=100
+#REST-CLIENT.CONFIG.MAX-CONN-PER-ROUTE=50
+#REST-CLIENT.CONFIG.CONNECT-TIMEOUT=3
+#REST-CLIENT.CONFIG.SOCKET-TIMEOUT=1800
+#REST-CLIENT.CONFIG.CONNECTION-REQUEST-TIMEOUT=3
+#REST-CLIENT.CONFIG.EVICT-IDLE-CONNECTIONS=60
+
+
+#########################################################
+# Query DataSource 설정
+# 입력 항목 (*): 필수 입력 항목
+# QUERY.DATA-SOURCE.CONFIG.MAXIMUM-POOL-SIZE : Query DataSource가 사용할 수 있는 최대 풀 크기를 지정합니다. 예를 들어, 30으로 설정하면 Query DataSource가 최대 30개의 연결을 동시에 사용할 수 있습니다.
+# QUERY.DATA-SOURCE.CONFIG.MINIMUM-IDLE : Query DataSource가 유지해야 하는 최소 유휴 연결 수를 지정합니다. 예를 들어, 3으로 설정하면 Query DataSource가 최소 3개의 유휴 연결을 유지합니다.
+# QUERY.DATA-SOURCE.CONFIG.CONNECTION-TIMEOUT : Query DataSource가 원격 서버에 연결을 시도할 때의 타임아웃 시간을 밀리초 단위로 지정합니다. 예를 들어, 30000으로 설정하면 연결 시도가 30초 이상 걸릴 경우 타임아웃이 발생합니다.
+# QUERY.DATA-SOURCE.CONFIG.IDLE-TIMEOUT : Query DataSource가 유휴 연결을 제거하는 간격을 밀리초 단위로 지정합니다. 예를 들어, 30000으로 설정하면 Query DataSource가 30초마다 유휴 연결을 제거합니다.
+# QUERY.DATA-SOURCE.CONFIG.MAX-LIFETIME : Query DataSource가 연결을 유지할 수 있는 최대 시간을 밀리초 단위로 지정합니다. 예를 들어, 1800000으로 설정하면 연결이 30분 이상 유지될 경우 해당 연결이 종료됩니다.
+# QUERY.DATA-SOURCE.CONFIG.LEAK-DETECTION-THRESHOLD : Query DataSource가 연결 누수를 감지하는 임계값을 밀리초 단위로 지정합니다. 예를 들어, 2500으로 설정하면 연결이 2.5초 이상 사용되고 반환되지 않을 경우 누수로 간주됩니다.
+#########################################################
+
+QUERY.DATA-SOURCE.CONFIG.MAXIMUM-POOL-SIZE=30
+QUERY.DATA-SOURCE.CONFIG.MINIMUM-IDLE=3
+QUERY.DATA-SOURCE.CONFIG.CONNECTION-TIMEOUT=30000
+QUERY.DATA-SOURCE.CONFIG.IDLE-TIMEOUT=30000
+QUERY.DATA-SOURCE.CONFIG.MAX-LIFETIME=1800000
+QUERY.DATA-SOURCE.CONFIG.LEAK-DETECTION-THRESHOLD=2500
+
+
+#########################################################
+# APP 설정
+# application 실행에 필요한 설정 값들을 정의합니다.
+# 입력 항목 (*): 필수 입력 항목
+# APP.LOG - 로그 관련 설정
+# APP.LOG.BASE-PATH : 로그 파일이 저장될 기본 경로를 지정합니다. 예를 들어, C:/quadmax/logs와 같이 설정할 수 있습니다.
+# APP.LOG.MAX-HISTORY : 로그 파일의 최대 보관 기간을 일수로 지정합니다. 예를 들어, 10으로 설정하면 로그 파일이 10일 동안 보관되고 그 이후에는 삭제됩니다.
+# APP.LOG.ROOT-LEVEL : 전체 로그의 기본 로그 레벨을 지정합니다. 예를 들어, INFO로 설정하면 INFO 레벨 이상의 로그가 기록됩니다.
+# APP.LOG.COMMON-LEVEL : co.kr.coresolutions.quadengine.common 패키지의 로그 레벨을 지정합니다. 예를 들어, INFO로 설정하면 해당 패키지의 INFO 레벨 이상의 로그가 기록됩니다.
+# APP.LOG.SCHEDULER-LEVEL : co.kr.coresolutions.quadengine.scheduler 패키지의 로그 레벨을 지정합니다. 예를 들어, INFO로 설정하면 해당 패키지의 INFO 레벨 이상의 로그가 기록됩니다.
+# APP.LOG.QUERY-LEVEL : co.kr.coresolutions.quadengine.query 패키지의 로그 레벨을 지정합니다. 예를 들어, INFO로 설정하면 해당 패키지의 INFO 레벨 이상의 로그가 기록됩니다.
+# APP.ENCRYPT - 암복호화 관련 설정
+# APP.ENCRYPT.PASSWORD : 애플리케이션에서 암복호화에 사용할 비밀번호를 지정합니다. true로 설정하면 암복호화 기능이 활성화되고, false로 설정하면 비활성화됩니다.
+# APP.RUNNING-MODE (single / duplex) - 단일모드/duplex:이중화모드 에 따른 중복 실행 방지 관련 설정
+# APP.RUNNING-MODE : 애플리케이션의 실행 모드를 지정합니다. single로 설정하면 단일 모드로 실행되고, duplex로 설정하면 이중화 모드로 실행됩니다. 이 설정은 중복 실행 방지와 관련이 있습니다.
+# APP.PARTNER - 중복 실행 방지 설정
+# APP.PARTNER.URL : 중복 실행 방지와 관련하여 파트너 애플리케이션의 URL을 지정합니다. 이 URL은 애플리케이션이 이중화 모드로 실행될 때 다른 인스턴스와 통신하는 데 사용됩니다.
+######################################################### 
+
+# APP 설정
+APP.LOG.BASE-PATH=
+APP.LOG.MAX-HISTORY=
+APP.LOG.ROOT-LEVEL=
+APP.LOG.COMMON-LEVEL=
+APP.LOG.SCHEDULER-LEVEL=
+APP.LOG.QUERY-LEVEL=
+
+APP.ENCRYPT.PASSWORD=true
+
+APP.RUNNING-MODE=single
+APP.PARTNER.URL=
+
+</pre>

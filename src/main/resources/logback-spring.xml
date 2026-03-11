@@ -1,0 +1,54 @@
+<configuration>
+
+	<springProperty name="LOG_BASE" source="app.log.base-path"/>
+	<springProperty name="LOG_MAX_HISTORY" source="app.log.max-history" defaultValue="0"/>
+	<springProperty name="LOG_LEVEL_ROOT" source="app.log.root-level" defaultValue="INFO"/>
+	<springProperty name="LOG_LEVEL_COMMON" source="app.log.common-level" defaultValue="DEBUG"/>
+	<springProperty name="LOG_LEVEL_SCHEDULER" source="app.log.scheduler-level" defaultValue="DEBUG"/>
+	<springProperty name="LOG_LEVEL_QUERY" source="app.log.query-level" defaultValue="DEBUG"/>
+
+	<property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
+
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>${LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="SCHEDULER_FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_BASE}/scheduler/scheduler.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_BASE}/scheduler/scheduler.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>${LOG_MAX_HISTORY}</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="QUERY_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_BASE}/query/query.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_BASE}/query/query.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>${LOG_MAX_HISTORY}</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+	<root level="${LOG_LEVEL_ROOT}">
+		<appender-ref ref="CONSOLE"/>
+		<appender-ref ref="QUERY_FILE"/>
+	</root>
+
+	<logger name="co.kr.coresolutions.quadengine.common" level="${LOG_LEVEL_COMMON}"/>
+
+	<logger name="co.kr.coresolutions.quadengine.query" level="${LOG_LEVEL_QUERY}" additivity="false">
+		<appender-ref ref="QUERY_FILE"/>
+	</logger>
+	<logger name="co.kr.coresolutions.quadengine.scheduler" level="${LOG_LEVEL_SCHEDULER}" additivity="false">
+		<appender-ref ref="SCHEDULER_FILE"/>
+	</logger>
+
+</configuration>
