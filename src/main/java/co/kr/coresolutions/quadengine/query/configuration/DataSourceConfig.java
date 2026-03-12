@@ -56,6 +56,7 @@ public class DataSourceConfig {
 	@PostConstruct
 	public void init() {
 		this.connectionDir = Paths.get(constants.getConnectionDir());
+		log.info("Connection directory set to: {}", connectionDir.toAbsolutePath());
 		// 파일로드 및 connectionMapdp put
 		loadAllConnectionFiles();
 		if (!connectionMap.isEmpty()) {

@@ -4,6 +4,8 @@ import co.kr.coresolutions.quadengine.common.exception.CommonException;
 import co.kr.coresolutions.quadengine.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,12 +21,14 @@ public class Constants {
 
 	private final ObjectMapper objectMapper;
 
+	@Value("${server.tomcat.basedir}")
+	private String tomcatBaseDir;
+
 	public static String commandDirName = "command";
 
 	public JsonNode getConfigFileAsJson() {
-		try (
-				InputStream inputStream = new FileInputStream(System.getProperty("catalina.base") + File.separator + "webapps" + File.separator + "dataqueryConfig" + File.separator + "config.txt");
-		) {
+		try (InputStream inputStream = new FileInputStream(tomcatBaseDir + File.separator + "webapps" + File.separator
+				+ "dataqueryConfig" + File.separator + "config.txt");) {
 			return objectMapper.readValue(inputStream, JsonNode.class);
 		} catch (Exception e) {
 			return null;
@@ -32,12 +36,12 @@ public class Constants {
 	}
 
 	public String getRootDir() {
-		return System.getProperty("catalina.base") + File.separator;
+		return tomcatBaseDir + File.separator;
 	}
 
 	public String getConnectionDir() {
-		log.info("getConnectionDir: {}", System.getProperty("catalina.base") + File.separator + "connection_info" + File.separator);
-		return System.getProperty("catalina.base") + File.separator + "connection_info" + File.separator;
+		log.info("getConnectionDir: {}", tomcatBaseDir + File.separator + "connection_info" + File.separator);
+		return tomcatBaseDir + File.separator + "connection_info" + File.separator;
 	}
 
 	public String getCommandDir() {
@@ -59,7 +63,7 @@ public class Constants {
 		}
 
 		try (BufferedInputStream bis = new BufferedInputStream(Files.newInputStream(path));
-			 ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+				ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
 			byte[] data = new byte[8192];
 			int read;
 
