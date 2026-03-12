@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 @Builder
 @ToString
 public class BizQueryPromptVO {
-
+	private String queryId;
 	private int seq;
 	private String promptString;
 	private String promptKeyword;
@@ -63,7 +63,7 @@ public class BizQueryPromptVO {
 		String op = replacePromptOp.toLowerCase();
 
 		return switch (op) {
-		case "equal", "not_equal", "greater", "greater_or_equal", "less", "less_or_equal" -> {
+		case "=", "!=", ">", ">=", "<", "<=" -> {
 			validateOrThrow(replacePromptValue);
 			yield valueQuote(replacePromptValue);
 		}

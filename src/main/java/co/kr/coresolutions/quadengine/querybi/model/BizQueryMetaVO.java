@@ -35,7 +35,6 @@ public class BizQueryMetaVO {
 	@Builder.Default
 	private List<BizTargetingVO> bizTargetingList = new ArrayList<>();
 
-	// 편의 메서드 (기존 로직 유지)
 	public void addBizQueryPrompt(BizQueryPromptVO vo) {
 		if (this.bizQueryPromptList == null) {
 			this.bizQueryPromptList = new ArrayList<>();

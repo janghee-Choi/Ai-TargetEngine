@@ -41,7 +41,8 @@
 		<appender-ref ref="CONSOLE"/>
 		<appender-ref ref="QUERY_FILE"/>
 	</root>
-
+ 	<logger name="com.zaxxer.hikari.pool.HikariPool" level="OFF" />
+    <logger name="com.zaxxer.hikari" level="WARN" />
 	<logger name="co.kr.coresolutions.quadengine.common" level="${LOG_LEVEL_COMMON}"/>
 
 	<logger name="co.kr.coresolutions.quadengine.query" level="${LOG_LEVEL_QUERY}" additivity="false">

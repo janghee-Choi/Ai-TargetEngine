@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
@@ -28,6 +29,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.context.ApplicationContext;
 
 @Slf4j
 @Component
@@ -40,6 +43,8 @@ public class DataSourceConfig {
 	private final Constants constants;
 	private final ObjectMapper objectMapper;
 	private final QueryDataSourceProperties properties;
+
+	private final ApplicationContext applicationContext;
 
 	private Path connectionDir;
 
@@ -301,6 +306,19 @@ public class DataSourceConfig {
 
 	private void initializeDataSource(String key) {
 		getDataSource(key, connectionMap.get(key));
+	}
+
+	public String getJpaDataSourceId() {
+		// JPA의 EntityManagerFactory 빈을 가져옴
+		LocalContainerEntityManagerFactoryBean emf = applicationContext
+				.getBean(LocalContainerEntityManagerFactoryBean.class);
+
+		// EMF가 참조하는 DataSource 객체 획득
+		javax.sql.DataSource ds = emf.getDataSource();
+
+		// 해당 객체와 일치하는 빈 이름을 컨테이너에서 찾음
+		String[] beanNames = applicationContext.getBeanNamesForType(javax.sql.DataSource.class);
+		return beanNames.length > 0 ? beanNames[0] : "notFound";
 	}
 
 }

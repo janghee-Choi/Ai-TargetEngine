@@ -13,18 +13,24 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
 
 @Slf4j
 @Service
 @Getter
 @RequiredArgsConstructor
-public class BizTargetingService {
+public class BizQueryBuliderService {
 
     // 정적 필드 대신 컨텍스트 객체나 파라미터 사용 권장 (예시용 유지)
     private final List<BizQueryMetaVO> bizQueryMetaList = new ArrayList<>();
 
     public void addBizQueryMeta(BizQueryMetaVO vo) {
         this.bizQueryMetaList.add(vo);
+    }
+
+    BizQueryBuliderService(List<BizQueryMetaVO> bizQueryMetaList) {
+        this.bizQueryMetaList.addAll(bizQueryMetaList);
     }
 
     /**
@@ -52,12 +58,25 @@ public class BizTargetingService {
             boolean isLast = (currentIdx == totalSize);
 
             // 1. 쿼리 원문 또는 아웃테이블 쿼리 결정
-            String query = dbmsEqualsF ? meta.getQueryMeta()
-                    : "SELECT %s FROM %s".formatted(meta.getFieldName(), meta.getOutTableId());
+            String query = "";
+            if (dbmsEqualsF) {
+                query = meta.getQueryMeta();
+            } else {
+                Pattern pattern = Pattern.compile("(.+)_(.+)_(//d+)");
+                Matcher matcher = pattern.matcher(meta.getOutTableId());
 
+                if (matcher.matches()) {
+                    String sessionId = matcher.group(1);
+                    String audienceId = matcher.group(2);
+                    int seq = Integer.parseInt(matcher.group(3));
+
+                    log.info("Parsed -> SessionId: {}, AudienceId: {}, Seq: {}", sessionId, audienceId, seq);
+                    query = "SELECT %s FROM T_AI_TARGET_RESULT WHERE SESSION_ID = '%s' AND AUDIENCE_ID = '%s'".formatted(meta.getFieldName(), sessionId, audienceId);
+                }
+
+            }
             // 2. Factory를 통한 SqlMaker 생성 및 SQL 조립
-            SqlMaker sqlMaker = SqlMakerFactory.getInstance().create(meta.getJoinId(), meta.getFieldName(), currentIdx,
-                    query, isStart, isLast);
+            SqlMaker sqlMaker = SqlMakerFactory.getInstance().create(meta.getJoinId(), meta.getFieldName(), currentIdx,query, isStart, isLast);
 
             sb.append(sqlMaker.makeSql());
 

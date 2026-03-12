@@ -6,6 +6,10 @@ spring:
   config:
     import:
       - optional:file:.env[.properties]
+    devtools:
+      restart:
+        enabled: true               # 자동 재시작 활성화
+        additional-paths: src/main/java # 감시할 추가 경로
   application:
     name: ${SPRING.APPLICATION.NAME:quad-engine}
     version: ${SPRING.APPLICATION.VERSION:1.0.0}
