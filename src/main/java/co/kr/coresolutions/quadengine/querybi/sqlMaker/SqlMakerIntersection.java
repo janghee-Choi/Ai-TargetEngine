@@ -34,7 +34,6 @@ public class SqlMakerIntersection extends SqlMaker {
     }
 
     public String middleSql() {
-        // Java 21 Text Blocks 활용: 쿼리 구조가 한눈에 보임
         return """
                 , %s AS (
                 SELECT %s FROM %s
