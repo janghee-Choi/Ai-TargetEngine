@@ -20,8 +20,10 @@ public class BizTargetResultDto {
 
     private List<TMetaResultDto> tMetaResultList;
 
-    private boolean targetSuccess;
     private String query;
     private String rowCnt;
     private String outTableName;
+
+    private boolean targetSuccess;
+    private String errorMessage;
 }

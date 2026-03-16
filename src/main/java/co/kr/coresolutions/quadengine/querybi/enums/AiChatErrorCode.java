@@ -1,46 +1,45 @@
 package co.kr.coresolutions.quadengine.querybi.enums;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-import co.kr.coresolutions.quadengine.common.exception.CodeInterface;
 import java.util.HashMap;
 import java.util.Map;
+import co.kr.coresolutions.quadengine.querybi.interfaces.AiTargetingCodeInterface;
+import lombok.Getter;
 
-@AllArgsConstructor
 @Getter
-public enum AiChatErrorCode implements CodeInterface {
+public enum AiChatErrorCode implements AiTargetingCodeInterface {
 
-    AI_CHAT_INVALID_REQUEST(100, "유효하지 않은 요청입니다."),
-    AI_CHAT_PROCESSING_ERROR(101, "AI Chat 처리 중 오류가 발생했습니다."),
-    AI_CHAT_UNSUPPORTED_OPERATION(102, "지원되지 않는 연산입니다."),
-    AI_CHAT_AUDIENCE_PARSING_ERROR(103, "Audience 파싱 중 오류가 발생했습니다."),
-    AI_CHAT_TMETA_PARSING_ERROR(104, "Meta 파싱 중 오류가 발생했습니다."),
-    AI_CHAT_QUERY_GENERATION_ERROR(104, "쿼리 생성 중 오류가 발생했습니다."),
-    
-    // AI Chat Query Builder 에러
-    AI_CHAT_QUERY_BUILDER_ERROR(1000, "AI Chat Query Builder 에러"),
-        
-    // AI Chat Query Targeting 에러
-	AI_CHAT_QUERY_TARGETING_ERROR(1001, "AI Chat Query Targeting 에러"),
-    AI_CHAT_QUERY_TARGETING_NOT_FOUND(1002, "AI Chat Query Targeting 데이터가 존재하지 않습니다."),
-    AI_CHAT_QUERY_TARGETING_INVALID(1003, "AI Chat Query Targeting 데이터가 유효하지 않습니다."),
-    AI_CHAT_QUERY_TARGETING_PROCESSING_ERROR(1004, "AI Chat Query Targeting 처리 중 오류가 발생했습니다."),
+	// 공통
+	INVALID_REQUEST(400, "유효하지 않은 요청입니다."), INTERNAL_ERROR(500, "내부 서버 오류가 발생했습니다."),
 
+	// 세션
+	SESSION_NOT_FOUND(1001, "세션을 찾을 수 없습니다."),
 
-	// 기타오류
-	FAILED(999, "FAILED");
+	// Audience
+	AUDIENCE_NOT_FOUND(1010, "Audience 데이터가 존재하지 않습니다."), AUDIENCE_PARSE_ERROR(1011, "Audience 파싱 중 오류가 발생했습니다."),
 
+	// TMeta
+	TMETA_NOT_FOUND(1020, "TMeta 데이터가 존재하지 않습니다."), TMETA_PARSE_ERROR(1021, "TMeta 파싱 중 오류가 발생했습니다."),
+	TMETA_FAILURE(1022, "TMeta 처리 중 오류가 발생했습니다."),
 
-	private final Boolean success = false;
+	// Targeting
+	TARGETING_NOT_FOUND(1030, "Targeting 결과가 존재하지 않습니다."), TARGETING_FAILED(1031, "Targeting 처리 중 오류가 발생했습니다."),
+	TARGETING_INVALID(1032, "Targeting 데이터가 유효하지 않습니다."),
+
+	// Query Builder
+	QUERY_BUILD_ERROR(1040, "쿼리 생성 중 오류가 발생했습니다."), UNSUPPORTED_OPERATION(1041, "지원되지 않는 연산입니다.");
+
 	private final Integer code;
 	private final String message;
+
+	AiChatErrorCode(Integer code, String message) {
+		this.code = code;
+		this.message = message;
+	}
 
 	@JsonValue
 	public Map<String, Object> toMap() {
 		Map<String, Object> map = new HashMap<>();
-		map.put("success", success);
 		map.put("code", code);
 		map.put("message", message);
 		return map;

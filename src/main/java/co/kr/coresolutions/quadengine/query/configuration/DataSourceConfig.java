@@ -90,6 +90,7 @@ public class DataSourceConfig {
 			log.warn("Connection directory does not exist: {}", connectionDir);
 			return;
 		}
+		log.info("Loading connection files from directory: {}", connectionDir);
 
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(connectionDir, "*.txt")) {
 			for (Path path : stream) {
@@ -205,7 +206,7 @@ public class DataSourceConfig {
 		if (dataSourceMap.containsKey(connId)) {
 			return dataSourceMap.get(connId);
 		}
-		throw new CommonException(ErrorCode.CONNECTION_NOT_FOUND, "Not found connection id : " + connId);
+		throw new CommonException(ErrorCode.CONNECTION_NOT_FOUND, " - connection id : " + connId);
 	}
 
 	public synchronized HikariDataSource getDataSource(String connId, ConnectionInfo connectionInfo) {

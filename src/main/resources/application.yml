@@ -76,6 +76,14 @@ query:
       max-lifetime: ${QUERY.DATA-SOURCE.CONFIG.MAX-LIFETIME:1800000}
       leak-detection-threshold: ${QUERY.DATA-SOURCE.CONFIG.LEAK-DETECTION-THRESHOLD:2500}
 
+logging:
+  structured:
+
+    format:
+      console: ecs
+  console:
+    structured:
+      printer : pretty
 app:
   log:
     base-path: ${APP.LOG.BASE-PATH:./logs}
@@ -84,6 +92,7 @@ app:
     common-level: ${APP.LOG.COMMON-LEVEL:INFO}
     scheduler-level: ${APP.LOG.SCHEDULER-LEVEL:INFO}
     query-level: ${APP.LOG.QUERY-LEVEL:INFO}
+    ai-target-level: ${APP.LOG.AI-TARGET-LEVEL:INFO}
   logging-db: ${APP.LOGGING-DB:false}
   encrypt:
     password: ${APP.ENCRYPT.PASSWORD:false}
@@ -93,3 +102,8 @@ app:
   command:
     shutdown-minutes: ${APP.COMMAND.SHUTDOWN-MINUTES:30}
 
+decorator:
+  datasource:
+    p6spy:
+      # 이 설정이 true일 때만 P6SpyLogConfig가 활성화됩니다.
+      enable-logging: ${DECORATOR.DATASOURCE.P6SPY.ENABLE-LOGGING:false}

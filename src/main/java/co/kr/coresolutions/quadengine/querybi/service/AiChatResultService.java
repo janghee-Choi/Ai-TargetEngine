@@ -8,11 +8,10 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Map;
 
-import co.kr.coresolutions.quadengine.common.exception.CommonException;
 import co.kr.coresolutions.quadengine.common.util.SqlUtils;
 import co.kr.coresolutions.quadengine.query.service.QueryService;
 import co.kr.coresolutions.quadengine.querybi.dto.AiChatResultDto;
-import co.kr.coresolutions.quadengine.querybi.enums.AiChatErrorCode;
+import co.kr.coresolutions.quadengine.querybi.interfaces.ParseResult;
 
 @Service
 @RequiredArgsConstructor
@@ -20,31 +19,32 @@ public class AiChatResultService {
 
     private final QueryService queryService;
 
-    public List<AiChatResultDto> getResultsBySessionId(String sessionId) {
+    public ParseResult<List<AiChatResultDto>> getResultsBySessionId(String sessionId) {
         String query = """
-                select
-                                sessionid,
-                                keyid,
-                                audience_id,
-                                userid,
-                                result,
-                                version
-                            from
-                                quadmax.t_ssbi_aichat_tresult
-                            where
-                                sessionid = :sessionId
-                            order by
-                                keyid,seq
+                SELECT
+                    sessionid,
+                    keyid,
+                    audience_id,
+                    userid,
+                    result,
+                    version
+                FROM
+                    quadmax.t_ssbi_aichat_tresult
+                WHERE
+                    sessionid = :sessionId
+                ORDER BY
+                    keyid, seq
                 """;
+
         MapSqlParameterSource params = new MapSqlParameterSource().addValue("sessionId", sessionId);
 
-        List<Map<String, Object>> ResultMapList = queryService.selectList(query, params);
+        List<Map<String, Object>> resultMapList = queryService.selectList(query, params);
 
-        List<AiChatResultDto> AiChatResultList = SqlUtils.mapToList(ResultMapList, AiChatResultDto.class);
-
-        if (AiChatResultList.isEmpty()) {
-            throw new CommonException(AiChatErrorCode.AI_CHAT_INVALID_REQUEST, "Session not found : " + sessionId);
+        if (resultMapList.isEmpty()) {
+            return ParseResult.empty();
         }
-        return AiChatResultList;
+
+        List<AiChatResultDto> aiChatResultList = SqlUtils.mapToList(resultMapList, AiChatResultDto.class);
+        return ParseResult.success(aiChatResultList, null);
     }
 }

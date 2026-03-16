@@ -4,6 +4,7 @@ import co.kr.coresolutions.quadengine.common.util.SqlUtils;
 import co.kr.coresolutions.quadengine.query.configuration.ConnectionInfo;
 import co.kr.coresolutions.quadengine.query.configuration.DataSourceConfig;
 import co.kr.coresolutions.quadengine.query.service.QueryService;
+import co.kr.coresolutions.quadengine.query.util.Util;
 import co.kr.coresolutions.quadengine.querybi.dto.AudienceDto;
 import co.kr.coresolutions.quadengine.querybi.dto.BizTargetResultDto;
 import co.kr.coresolutions.quadengine.querybi.dto.SetOperationDto;
@@ -209,7 +210,7 @@ public class BizTargetService {
             String rawSql = "";
             if (builderService.equalsDbms()) {
                 rawSql = Optional.ofNullable(builderService.makeSql(true)).orElse("");
-                log.info("raw SQL (DBMS matches): {}", rawSql);
+                log.info("raw SQL (DBMS matches): {}", Util.cleanLog(rawSql));
             } else {
                 for (BizQueryMetaVO bqmvo : builderService.getBizQueryMetaList()) {
                     // 1. 개별 타겟 ID 및 테이블명 생성
@@ -236,7 +237,7 @@ public class BizTargetService {
                 }
 
                 rawSql = Optional.ofNullable(builderService.makeSql(false)).orElse("");
-                log.info("raw SQL (DBMS differs): {}", rawSql);
+                log.info("raw SQL (DBMS differs): {}", Util.cleanLog(rawSql));
 
             }
 
@@ -275,6 +276,7 @@ public class BizTargetService {
         } catch (Exception e) {
             log.error("Failed to execute target service: {}", e.getMessage(), e);
             resultDto.setTargetSuccess(false);
+            resultDto.setErrorMessage("Failed to execute target service: " + e.getMessage());
         }
         return resultDto;
     }
@@ -406,7 +408,10 @@ public class BizTargetService {
 
         } catch (Exception e) {
             log.error("Failed to record final combination result: {}", e.getMessage(), e);
-            throw new RuntimeException("최종 결과 적재 실패", e);
+            return BizTargetResultDto.builder().sessionId(sessionId).audienceId(finalAudienceId)
+                    .rowCnt(String.valueOf("-1")).targetSuccess(false).query(combinationSql)
+                    .outTableName("T_AI_TARGET_RESULT")
+                    .errorMessage("Failed to record final combination result: " + e.getMessage()).build();
         }
     }
 

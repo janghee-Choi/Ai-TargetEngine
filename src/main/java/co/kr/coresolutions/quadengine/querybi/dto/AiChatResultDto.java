@@ -1,12 +1,13 @@
 package co.kr.coresolutions.quadengine.querybi.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import co.kr.coresolutions.quadengine.querybi.interfaces.KeyedResult;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class AiChatResultDto {
+public class AiChatResultDto implements KeyedResult {
     @JsonProperty("sessionid")
     private String sessionId;
 
@@ -16,12 +17,13 @@ public class AiChatResultDto {
     @JsonProperty("audience_id")
     private String audienceId;
 
-    @JsonProperty("userid") 
+    @JsonProperty("userid")
     private String userId;
-    
+
     @JsonProperty("result")
     private String result;
 
     @JsonProperty("version")
     private String version;
+
 }
